@@ -1,8 +1,8 @@
-0cda2864cf01b861689668eb520c1373 *DESCRIPTION
-5c0f22243e361e837a1c07543e9fbfb8 *NAMESPACE
+a7256e6256a7b42f412256c80fd94c0f *DESCRIPTION
+c938c28e1bb7944b09a194f087877335 *NAMESPACE
 24af16da05d35cccbfc2d9f555fa9f67 *R/ClustMMDD.R
 5b7282cc6051aff2f0bfba1bb98197d9 *R/RcppExports.R
-d1259e5df6c25e18db924b2d0a1360f7 *R/modelKS.R
+1cb17a4fb51f5f531582384d282c28e0 *R/modelKS.R
 16512d6792b9ca64914afa687bca2ed9 *R/zzz.R
 d173ee734061446a17e6788856a1eec9 *data/exModelKS.rda
 368bc112dc3d7164ecb9bcaa600e6d54 *data/genotype1.rda
@@ -21,7 +21,7 @@ ff18839487733e119ab9789a3cd8f663 *inst/test/par
 112620c4bbe38be4beeda3cc5586d863 *inst/test/symbols.rds
 065f013a108a528f153510337d46832a *inst/test/tab$data_ExploredModels.txt
 3ab963b6cbb59fd7331f11f37e3bd4d5 *inst/test/test.R
-b2f4eb2cfd9fc5515cf690b8fb70e27e *man/ClustMMDD-package.Rd
+14814476654d06113b4fbb9f0a45c04b *man/ClustMMDD-package.Rd
 b1272533ab5cb9573df31a13b71c1b6a *man/EmOptions.Rd
 ceccb01282e3e574aa78fec0102df6da *man/Rcpp_modules_examples.Rd
 470886e9894c5e49194904e05f4baf35 *man/backward.explorer.Rd
@@ -36,8 +36,9 @@ a1bbff7af7980d8d1296674ac4ed862f *man/genotype2.Rd
 f43b1ca7f3adc8f1d13036d740ab2da5 *man/is.element-methods.Rd
 8d032cf46830af522816f2eec48a28d2 *man/is.modelKS-methods.Rd
 08c4385cb6ad4d96b4b54c1b1ad7cb4e *man/isInFile.R.Rd
+be2c77c17882dc6be65bab0a2430092f *man/model-methods.Rd
 b1801813dc463c25bdc0f637d2f24974 *man/model.selection.R.Rd
-6a7f956a1d8ea2ac71aa56ecf2a48956 *man/modelKS-class.Rd
+3f3eec2cca61a2af80b8f60484a78542 *man/modelKS-class.Rd
 a837608a4012b9417a77cb542de83bf1 *man/read.modelKS-methods.Rd
 b0490c814ba63f675541b03d45c41a76 *man/read.or.compute.Rd
 f52e11e03d9acc88a38e190ec11f36c7 *man/selectK.R.Rd
@@ -48,7 +49,7 @@ d66146b10dee1a1ba7bbc7322eb409b3 *man/simulData-methods.Rd
 330db108fe1629b4587b795655efbb57 *man/z==-methods.Rd
 17c4adc4dfd290f5f8295fbf754607dd *man/z[-methods.Rd
 b23d1a5d1b3519b1da0a50ad6c82c07b *man/z[_--methods.Rd
-a61d85235abbbf502691e8cd2377b108 *src/ClustMMDD.cpp
+fb0c3fcbf59245c7d58b1f5912ed7f9b *src/ClustMMDD.cpp
 9a06ae9a6eb61992f2cb1994988b84b6 *src/ClustMMDD.h
 1385b4ccc140d335a0ec868992f69f0e *src/RcppExports.cpp
 3b73a24810947a5f9d9dcec82746c971 *src/macros.h

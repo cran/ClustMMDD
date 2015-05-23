@@ -24,5 +24,6 @@ exportMethods("[")
 exportMethods(is.element)
 exportMethods(is.modelKS)
 exportMethods(read.modelKS)
+exportMethods(model)
 exportMethods(simulData)
 

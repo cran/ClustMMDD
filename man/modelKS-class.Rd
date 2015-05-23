@@ -11,6 +11,7 @@
 \alias{simulData,modelKS,numeric,numeric-method}
 \alias{read.modelKS,character-method}
 \alias{is.modelKS,ANY-method}
+\alias{model,modelKS-method}
 
 
 
@@ -82,4 +83,5 @@ slotNames("modelKS")
 exModelKS
 exModelKS["K"]
 exModelKS["S"]
+model(exModelKS)
 }

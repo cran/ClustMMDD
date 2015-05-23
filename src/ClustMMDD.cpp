@@ -5,7 +5,7 @@
 /** #include <progress.hpp> */
 
 #include <Rmath.h>
-#include <math.h>
+//#include <math.h>
 #include <stdlib.h>
 #include <stdio.h>
 
@@ -893,14 +893,15 @@ Rcpp::List getEmOptions_Rcpp()
 
 /**
  * @brief	Class PAR_KS
+ * @Warning	TODO : Change the names of variables
  */
 
 class PAR_KS
 {
 private:
-  int _N;
-  int _K;
-  Rcpp::LogicalVector _S;
+  int _N_OfPAR_KS;
+  int _K_OfPAR_KS;
+  Rcpp::LogicalVector _S_OfPAR_KS;
   int _Dim;
   Rcpp::DoubleVector _PI_K;
   Rcpp::NumericMatrix _PROB;
@@ -916,8 +917,8 @@ private:
 public:
   PAR_KS()
   {
-    _N = 0;
-    _K = 0;
+    _N_OfPAR_KS = 0;
+    _K_OfPAR_KS = 0;
     _Dim = 0;
     _LOG_LIK = 0.0;
     _ENT = 0.0;
@@ -925,9 +926,9 @@ public:
 
   PAR_KS(int N, int K, Rcpp::LogicalVector S)
   {
-    _N = N;
-    _K = K;
-    _S = S;
+    _N_OfPAR_KS = N;
+    _K_OfPAR_KS = K;
+    _S_OfPAR_KS = S;
     _Dim = 0;
     _LOG_LIK = 0.0;
     _ENT = 0.0;
@@ -947,9 +948,9 @@ public:
    */
   PAR_KS(const PAR_KS &par_ks)
   {
-    _N = par_ks._N;
-    _K = par_ks._K;
-    _S = par_ks._S;
+    _N_OfPAR_KS = par_ks._N_OfPAR_KS;
+    _K_OfPAR_KS = par_ks._K_OfPAR_KS;
+    _S_OfPAR_KS = par_ks._S_OfPAR_KS;
     _Dim = par_ks._Dim;
     _PI_K = par_ks._PI_K;
     _PROB = par_ks._PROB;
@@ -990,24 +991,24 @@ public:
    */
   PAR_KS(Rcpp::List listParKS)
   {
-    _N = Rcpp::as<int>(listParKS["N"]);
+    _N_OfPAR_KS = Rcpp::as<int>(listParKS["N"]);
 
-    _K = Rcpp::as<int>(listParKS["K"]);
+    _K_OfPAR_KS = Rcpp::as<int>(listParKS["K"]);
 
-    _S = Rcpp::as<Rcpp::LogicalVector>(listParKS["S"]);
+    _S_OfPAR_KS = Rcpp::as<Rcpp::LogicalVector>(listParKS["S"]);
 
     _N_LEVELS = Rcpp::as<Rcpp::IntegerVector>(listParKS["NbersLevels"]);
     _Dim = Rcpp::as<int>(listParKS["dim"]);
     _PI_K = Rcpp::as<Rcpp::DoubleVector>(listParKS["pi_K"]);
-    int j, a0, P = _S.length(), a, k, a1 = std::accumulate(_N_LEVELS.begin(), _N_LEVELS.end(), 0);
+    int j, a0, P = _S_OfPAR_KS.length(), a, k, a1 = std::accumulate(_N_LEVELS.begin(), _N_LEVELS.end(), 0);
 
-    Rcpp::NumericMatrix PROB(a1, _K);
+    Rcpp::NumericMatrix PROB(a1, _K_OfPAR_KS);
     Rcpp::List probList = Rcpp::as<Rcpp::List>(listParKS["prob"]);
     for(j = 0; j < P; j++)
       {
           a0 = std::accumulate(_N_LEVELS.begin(), _N_LEVELS.begin() + j, 0);
           Rcpp::NumericMatrix probj = Rcpp::as<Rcpp::NumericMatrix>(probList[j]);
-          for(k = 0; k < _K; k++)
+          for(k = 0; k < _K_OfPAR_KS; k++)
               for(a = 0; a < _N_LEVELS[j]; a++)
                   PROB(a0 + a, k) = probj(a, k);
       }
@@ -1033,9 +1034,9 @@ public:
    */
   PAR_KS & operator= (PAR_KS par_ks)
   {
-    _N = par_ks._N;
-    _K = par_ks._K;
-    _S = par_ks._S;
+    _N_OfPAR_KS = par_ks._N_OfPAR_KS;
+    _K_OfPAR_KS = par_ks._K_OfPAR_KS;
+    _S_OfPAR_KS = par_ks._S_OfPAR_KS;
     _Dim = par_ks._Dim;
     _PI_K = par_ks._PI_K;
     _PROB = par_ks._PROB;
@@ -1060,13 +1061,13 @@ public:
     s = 0.0;
     sc = 0.0;
 
-    for(j = 0; j < _S.length(); j++)
+    for(j = 0; j < _S_OfPAR_KS.length(); j++)
     {
-      if(_S[j]) s += _N_LEVELS[j] - 1;
+      if(_S_OfPAR_KS[j]) s += _N_LEVELS[j] - 1;
       else sc += _N_LEVELS[j] - 1;
     }
 
-    _Dim = _K - 1 + _K*s + sc;
+    _Dim = _K_OfPAR_KS - 1 + _K_OfPAR_KS*s + sc;
   }
 
   /**
@@ -1085,9 +1086,9 @@ public:
            Rcpp::IntegerVector n_levels,
            Rcpp::DoubleVector levels_freq)
   {
-    _N = N;
-    _K = K;
-    _S = S;
+    _N_OfPAR_KS = N;
+    _K_OfPAR_KS = K;
+    _S_OfPAR_KS = S;
     _PI_K = pi_k;
     _PROB = prob;
     _N_LEVELS = n_levels;
@@ -1096,13 +1097,13 @@ public:
 
     int j, k = 0, a0, a;
 
-    for(j = 0; j < _S.length(); j++)
+    for(j = 0; j < _S_OfPAR_KS.length(); j++)
       {
-          if(!_S[j])
+          if(!_S_OfPAR_KS[j])
           {
               a0 = std::accumulate(_N_LEVELS.begin(), _N_LEVELS.begin() + j, 0.0);
               for(a = 0; a < _N_LEVELS[j]; a++)
-                  for(k = 0; k < _K; k++)
+                  for(k = 0; k < _K_OfPAR_KS; k++)
                       _PROB(a0 + a, k) = levels_freq[a0 + a];
           }
       }
@@ -1121,22 +1122,22 @@ public:
    */
   void setFromList(Rcpp::List listParKS)
   {
-      _N = Rcpp::as<int>(listParKS["N"]);
-      _K = Rcpp::as<int>(listParKS["K"]);
-      _S = Rcpp::as<Rcpp::LogicalVector>(listParKS["S"]);
+      _N_OfPAR_KS = Rcpp::as<int>(listParKS["N"]);
+      _K_OfPAR_KS = Rcpp::as<int>(listParKS["K"]);
+      _S_OfPAR_KS = Rcpp::as<Rcpp::LogicalVector>(listParKS["S"]);
 
       _N_LEVELS = Rcpp::as<Rcpp::IntegerVector>(listParKS["NbersLevels"]);
       _Dim = Rcpp::as<int>(listParKS["dim"]);
       _PI_K = Rcpp::as<Rcpp::DoubleVector>(listParKS["pi_K"]);
-      int j, a0, P = _S.length(), a, k, a1 = std::accumulate(_N_LEVELS.begin(), _N_LEVELS.end(), 0);
+      int j, a0, P = _S_OfPAR_KS.length(), a, k, a1 = std::accumulate(_N_LEVELS.begin(), _N_LEVELS.end(), 0);
 
-      Rcpp::NumericMatrix PROB(a1, _K);
+      Rcpp::NumericMatrix PROB(a1, _K_OfPAR_KS);
       for(j = 0; j < P; j++)
       {
           a0 = std::accumulate(_N_LEVELS.begin(), _N_LEVELS.begin() + j, 0);
           Rcpp::List probList = Rcpp::as<Rcpp::List>(listParKS["prob"]);
           Rcpp::NumericMatrix probj = Rcpp::as<Rcpp::NumericMatrix>(probList[j]);
-          for(k = 0; k < _K; k++)
+          for(k = 0; k < _K_OfPAR_KS; k++)
               for(a = 0; a < _N_LEVELS[j]; a++)
                   PROB(a0 + a, k) = probj(a, k);
       }
@@ -1151,19 +1152,19 @@ public:
       _POST_CLASSIF = Rcpp::as<Rcpp::IntegerVector>(listParKS["mapClassif"]);
   }
 
-  void setN(int N){_N = N;}
+  void setN(int N){_N_OfPAR_KS = N;}
 
   /**
    * @brief setK
    * @param K
    */
-  void setK(int K){_K = K;}
+  void setK(int K){_K_OfPAR_KS = K;}
 
   /**
    * @brief setS
    * @param S
    */
-  void setS(Rcpp::LogicalVector S){_S = S;}
+  void setS(Rcpp::LogicalVector S){_S_OfPAR_KS = S;}
 
   /**
    * @brief setKS
@@ -1172,15 +1173,15 @@ public:
    */
   void setKS(int K, Rcpp::LogicalVector S)
   {
-      _K = K;
-      _S = S;
+      _K_OfPAR_KS = K;
+      _S_OfPAR_KS = S;
   }
 
   void setNPKS(int N, int K, Rcpp::LogicalVector S)
   {
-    _N = N;
-    _K = K;
-    _S = S;
+    _N_OfPAR_KS = N;
+    _K_OfPAR_KS = K;
+    _S_OfPAR_KS = S;
   }
 
   /**
@@ -1223,15 +1224,16 @@ public:
 
   void setCRITERIA(double lv, double Cte)
   {
-    if(_N == 0)
+    if(_N_OfPAR_KS == 0)
       {
         throw Rcpp::exception("N is equal to 0");
         return;
       }
-    _CRITERIA = Rcpp::DoubleVector::create(_["BIC"] = -lv + ((double) _Dim*log(_N))/2,
-                                           _["AIC"] = -lv + _Dim,
-                                        _["ICL"] = -lv + ((double) _Dim*log(_N))/2 + _ENT,
-                                           _["CteDim"] = -lv + Cte*_Dim);
+    double dim = (double) _Dim;
+    _CRITERIA = Rcpp::DoubleVector::create(_["BIC"] = -lv + ((double) dim*log((double) _N_OfPAR_KS))/2,
+                                           _["AIC"] = -lv + dim,
+                                        _["ICL"] = -lv + (dim*log((double) _N_OfPAR_KS))/2 + _ENT,
+                                           _["CteDim"] = -lv + Cte*dim);
   }
 
   void setLEVELS(Rcpp::CharacterVector levels) {_LEVELS = levels;}
@@ -1254,11 +1256,11 @@ public:
 
   void setTik2(double *Tik)
   {
-    _Tik = Rcpp::NumericMatrix(_N, _K);
+    _Tik = Rcpp::NumericMatrix(_N_OfPAR_KS, _K_OfPAR_KS);
     int i, k;
-    for(i = 0; i < _N; i++)
-      for(k = 0; k < _K; k++)
-        _Tik(i, k) = Tik[i*_K + k];
+    for(i = 0; i < _N_OfPAR_KS; i++)
+      for(k = 0; k < _K_OfPAR_KS; k++)
+        _Tik(i, k) = Tik[i*_K_OfPAR_KS + k];
   }
 
   //void setENT(double ent){_ENT = ent;}
@@ -1267,22 +1269,22 @@ public:
   {
     int i, k;
     _ENT = 0.0;
-    for(i = 0; i < _N; i++)
-        for(k = 0; k < _K; k++)
-            _ENT -= _Tik[i*_K+k] <= 0? 0 : _Tik[i*_K+k]*log(_Tik[i*_K+k]);
+    for(i = 0; i < _N_OfPAR_KS; i++)
+        for(k = 0; k < _K_OfPAR_KS; k++)
+            _ENT -= _Tik[i*_K_OfPAR_KS+k] <= 0? 0 : _Tik[i*_K_OfPAR_KS+k]*log(_Tik[i*_K_OfPAR_KS+k]);
   }
 
 
   /**
    * @brief	Getters
    */
-  int getN(){return _N;}
+  int getN(){return _N_OfPAR_KS;}
 
-  int getK() {return _K;}
+  int getK() {return _K_OfPAR_KS;}
 
-  bool getS_j(int j) {return _S[j];}
+  bool getS_j(int j) {return _S_OfPAR_KS[j];}
 
-  Rcpp::LogicalVector getS() {return _S;}
+  Rcpp::LogicalVector getS() {return _S_OfPAR_KS;}
 
   int getDim() {return _Dim;}
 
@@ -1365,14 +1367,14 @@ public:
    */
   Rcpp::List getList()
   {
-    int i0, i, j, p = _S.length();
+    int i0, i, j, p = _S_OfPAR_KS.length();
     Rcpp::List R_out;
 
 
     Rcpp::List ListProb(p);
     Rcpp::List ListLevels(p);
-    Rcpp::CharacterVector vect1(_K);
-    for(i = 0; i<_K; i++)
+    Rcpp::CharacterVector vect1(_K_OfPAR_KS);
+    for(i = 0; i<_K_OfPAR_KS; i++)
     {
       vect1[i] = "pop" + itos(i+1);
     }
@@ -1381,7 +1383,7 @@ public:
     {
         i0 = std::accumulate(_N_LEVELS.begin(), _N_LEVELS.begin() + i, 0);
 
-        Rcpp::NumericMatrix Probx = _PROB(Rcpp::Range(i0, i0 + _N_LEVELS[i] - 1), Rcpp::Range(0, _K-1));
+        Rcpp::NumericMatrix Probx = _PROB(Rcpp::Range(i0, i0 + _N_LEVELS[i] - 1), Rcpp::Range(0, _K_OfPAR_KS-1));
 
         Rcpp::CharacterVector vect(_N_LEVELS[i]);
         for(j = 0; j<_N_LEVELS[i]; j++)
@@ -1392,9 +1394,9 @@ public:
         ListProb[i] = Probx;
     }
 
-    R_out["N"] = _N;
-    R_out["K"] = _K;
-    R_out["S"] = _S;
+    R_out["N"] = _N_OfPAR_KS;
+    R_out["K"] = _K_OfPAR_KS;
+    R_out["S"] = _S_OfPAR_KS;
     R_out["dim"] = _Dim;
 
     R_out["pi_K"] = _PI_K;
@@ -1422,9 +1424,9 @@ public:
                         Rcpp::IntegerVector n_levels,
                         Rcpp::DoubleVector levels_freq)
   {
-    _N = N;
-      _K = K;
-      _S = S;
+	  _N_OfPAR_KS = N;
+      _K_OfPAR_KS = K;
+      _S_OfPAR_KS = S;
       _LOG_LIK = 0.0;
       _ENT = 0.0;
 
@@ -1474,22 +1476,22 @@ public:
 
     int i, j, a, a0, k;
     Rcpp::Rcout << "\n> PAR_KS print method\n";
-    Rcpp::Rcout << "\n> Size of data N = " << _N << "\n";
-    Rcpp::Rcout << "\tNumber of populations K = " << _K << "\n";
+    Rcpp::Rcout << "\n> Size of data N = " << _N_OfPAR_KS << "\n";
+    Rcpp::Rcout << "\tNumber of populations K = " << _K_OfPAR_KS << "\n";
     Rcpp::Rcout << "\tSelected variables S = " ;
-    for(j = 0; j < _S.length(); j++)
-      Rcpp::Rcout << (_S[j]? 1 : 0) << " ";
+    for(j = 0; j < _S_OfPAR_KS.length(); j++)
+      Rcpp::Rcout << (_S_OfPAR_KS[j]? 1 : 0) << " ";
     Rcpp::Rcout << "\n";
     Rcpp::Rcout << "\tMixing proportions : ";
-    for(j = 0; j < _K; j++)
+    for(j = 0; j < _K_OfPAR_KS; j++)
       Rcpp::Rcout << _PI_K[j] << " ";
     Rcpp::Rcout << "\n";
     Rcpp::Rcout << "\tNumbers levels : ";
-    for(j = 0; j < _S.length(); j++)
+    for(j = 0; j < _S_OfPAR_KS.length(); j++)
         Rcpp::Rcout << " " << _N_LEVELS[j] ;
 
     Rcpp::Rcout << "\n\tEstimates of probabilities in different populations\n";
-    for(j = 0; j<_S.length(); j++)
+    for(j = 0; j<_S_OfPAR_KS.length(); j++)
     {
       Rcpp::Rcout << "\t X" << j+1 << "\n";
 
@@ -1500,7 +1502,7 @@ public:
       for(a = 0; a<_N_LEVELS[j]; a++)
       {
         Rcpp::Rcout << "\t\t  " << _LEVELS[a0+a] << "\t";
-        for(k = 0; k<_K; k++)
+        for(k = 0; k<_K_OfPAR_KS; k++)
           Rcpp::Rcout << std::fixed << _PROB(a0 + a, k) << "\t";
         Rcpp::Rcout << "\n";
       }
@@ -1522,22 +1524,22 @@ public:
 
     int i, j, a, a0, k;
     out << "#The set of parameters of a model (K,S) by the R package ClustMMDD\n";
-    out << "#Size of data N = " << _N << "\n";
-    out << "K " << _K << "\n";
+    out << "#Size of data N = " << _N_OfPAR_KS << "\n";
+    out << "K " << _K_OfPAR_KS << "\n";
     out << "S " ;
-    for(j = 0; j < _S.length(); j++)
-      out << (_S[j]? 1 : 0) << " ";
+    for(j = 0; j < _S_OfPAR_KS.length(); j++)
+      out << (_S_OfPAR_KS[j]? 1 : 0) << " ";
     out << "\n";
     out << "\tMixing proportions : ";
-    for(j = 0; j < _K; j++)
+    for(j = 0; j < _K_OfPAR_KS; j++)
       out << _PI_K[j] << " ";
     out << "\n";
     out << "\tNumbers levels : ";
-    for(j = 0; j < _S.length(); j++)
+    for(j = 0; j < _S_OfPAR_KS.length(); j++)
         out << " " << _N_LEVELS[j] ;
 
     out << "\n\tEstimates of probabilities in different populations\n";
-    for(j = 0; j<_S.length(); j++)
+    for(j = 0; j<_S_OfPAR_KS.length(); j++)
     {
       out << "\t X" << j+1 << "\n";
 
@@ -1548,7 +1550,7 @@ public:
       for(a = 0; a<_N_LEVELS[j]; a++)
       {
         out << "\t\t  " << _LEVELS[a0+a] << "\t";
-        for(k = 0; k<_K; k++)
+        for(k = 0; k<_K_OfPAR_KS; k++)
           out << std::fixed << _PROB(a0 + a, k) << "\t";
         out << "\n";
       }
@@ -1572,9 +1574,9 @@ public:
 	out.open(xfile.c_str(), std::ios::app);
 	int P = _N_LEVELS.length();
 	out.precision(PRECISION);
-    out << _N << " " << P << " " ;
+    out << _N_OfPAR_KS << " " << P << " " ;
 	for(int i = 0; i < P; i++)
-	  if(_S[i]) out << 1 << " ";
+	  if(_S_OfPAR_KS[i]) out << 1 << " ";
 	  else out << 0 << " ";
 	out  << _LOG_LIK << " " << _Dim << " " << _ENT << "\n";
   
@@ -1643,8 +1645,8 @@ RCPP_MODULE(MODULE_PAR_KS)
 class DATA
 {
 protected:
-    int _N;
-    int _P;
+    int _N_OfDATA;
+    int _P_OfDATA;
     int _PLOIDY;
     int *_DATA;
     std::string *_LEVELS;
@@ -1655,8 +1657,8 @@ protected:
 
   void initialize()
   {
-      _N = 0;
-      _P = 0;
+      _N_OfDATA = 0;
+      _P_OfDATA = 0;
       _PLOIDY = 0;
       _DATA = NULL;
       _LEVELS = NULL;
@@ -1672,8 +1674,8 @@ public:
 
   DATA()
   {
-      _N = 0;
-      _P = 0;
+      _N_OfDATA = 0;
+      _P_OfDATA = 0;
       _PLOIDY = 0;
       _DATA = NULL;
       _LEVELS = NULL;
@@ -1695,8 +1697,8 @@ public:
       if(n_occurrences < 1 || n_occurrences > NBER_OCCURRENCES_MAX || data.nrow() % n_occurrences != 0)
           throw Rcpp::exception("Incompatible dimension or number of occurrences incorrect");
       _DATA = data.begin();
-      _N = data.ncol(); // Warning : data is transposed and stored by row
-      _P = data.nrow()/n_occurrences;
+      _N_OfDATA = data.ncol(); // Warning : data is transposed and stored by row
+      _P_OfDATA = data.nrow()/n_occurrences;
       _LEVELS = NULL;
       _N_LEVELS = NULL;
       _LEVELS_COUNT = NULL;
@@ -1714,9 +1716,9 @@ public:
       if(n_occurrences < 1 || n_occurrences > NBER_OCCURRENCES_MAX || data.nrow() % n_occurrences != 0)
           throw Rcpp::exception("Incompatible dimension or number of occurrences incorrect");
       _DATA = data.begin();
-      _N = data.ncol();
+      _N_OfDATA = data.ncol();
       _PLOIDY = n_occurrences;
-      _P = data.nrow()/_PLOIDY;
+      _P_OfDATA = data.nrow()/_PLOIDY;
       //_LEVELS = levels.begin();
       _N_LEVELS = n_levels.begin();
       _LEVELS_COUNT = levels_count.begin();
@@ -1732,8 +1734,8 @@ public:
       if(n_occurrences < 1 || n_occurrences > NBER_OCCURRENCES_MAX || data.nrow() % n_occurrences != 0)
           throw Rcpp::exception("Incompatible dimension or number of occurrences incorrect");
       _DATA = data.begin();
-      _N = data.ncol();
-      _P = data.nrow()/n_occurrences;
+      _N_OfDATA = data.ncol();
+      _P_OfDATA = data.nrow()/n_occurrences;
       _PLOIDY = n_occurrences;
       //_LEVELS = levels.begin();
       _N_LEVELS = n_levels.begin();
@@ -1751,12 +1753,12 @@ public:
    */
   int * operator() (int i, Rcpp::internal::NamedPlaceHolder)
   {
-    if(i >= _N)
+    if(i >= _N_OfDATA)
     {
         MyError("Index out of bounds");
         throw Rcpp::exception("Index out of bounds");
     }
-    return _DATA + i*_PLOIDY*_P;
+    return _DATA + i*_PLOIDY*_P_OfDATA;
   }
 
   /**
@@ -1764,12 +1766,12 @@ public:
    */
   int * operator() (int i, int j)
   {
-    if(i >= _N || j >= _P)
+    if(i >= _N_OfDATA || j >= _P_OfDATA)
     {
         MyError("Index out of bounds");
         throw Rcpp::exception("Index out of bounds");
     }
-    return _DATA + (_P*i + j)*_PLOIDY;
+    return _DATA + (_P_OfDATA*i + j)*_PLOIDY;
   }
 
   /**
@@ -1779,16 +1781,16 @@ public:
   {
     int s = 0;
     for(int k = 0; k < _PLOIDY; k++)
-      s += (*(_DATA + (_P*i + j)*_PLOIDY+ k) == a)? 1 : 0;
+      s += (*(_DATA + (_P_OfDATA*i + j)*_PLOIDY+ k) == a)? 1 : 0;
 
     return s;
   }
 
   int * getDATA() {return _DATA;}
 
-  int getN() {return _N;}
+  int getN() {return _N_OfDATA;}
 
-  int getP() {return _P;}
+  int getP() {return _P_OfDATA;}
 
   std::string * getLEVELS() {return _LEVELS;}
 
@@ -1807,8 +1809,8 @@ public:
   void setDATA(Rcpp::IntegerMatrix mat)
   {
       // Summit a transposed matrix
-      _N = mat.ncol();
-      _P = mat.nrow();
+      _N_OfDATA = mat.ncol();
+      _P_OfDATA = mat.nrow();
       _DATA = mat.begin();
   }
 
@@ -1821,9 +1823,9 @@ public:
         if(n_occurrences < 1 || n_occurrences > NBER_OCCURRENCES_MAX || data.nrow() % n_occurrences != 0)
             throw Rcpp::exception("Incompatible dimension or number of occurrences incorrect");
         _DATA = data.begin();
-        _N = data.ncol();
+        _N_OfDATA = data.ncol();
         _PLOIDY = n_occurrences;
-        _P = data.nrow()/_PLOIDY;
+        _P_OfDATA = data.nrow()/_PLOIDY;
         //_LEVELS = levels.begin();
         _N_LEVELS = n_levels.begin();
         _LEVELS_COUNT = levels_count.begin();
@@ -1879,7 +1881,7 @@ RCPP_MODULE(MODULE_DATA)
 /**
   * @brief	Set observed frequencies for a vector of prior classification
   * @warning	Values in prior_classif must be in 0:K.
-  * @warning   Set _K and _S before.
+  * @warning   Set _K_OfPAR_KS and _S_OfPAR_KS before.
   */
 void setParObs(DATA &data, int *prior_classif, PAR_KS &parObs)
 {
@@ -2830,10 +2832,11 @@ Rcpp::List isInFile_Rcpp(int K, Rcpp::LogicalVector S, std::string fichier, bool
 //	[[Rcpp::export()]]
 Rcpp::DoubleVector computeCriteria_Rcpp(double lv, int dim, int N, double entropy = 0, double Cte = 1.0)
 {
-	Rcpp::DoubleVector criteria = Rcpp::DoubleVector::create(_["BIC"] = -lv + ((double) dim*log(N))/2,
-                                           _["AIC"] = -lv + dim,
-                                        _["ICL"] = -lv + ((double) dim*log(N))/2 + entropy,
-                                           _["CteDim"] = -lv + Cte*dim);
+	double xdim = (double) dim;
+	Rcpp::DoubleVector criteria = Rcpp::DoubleVector::create(_["BIC"] = -lv + (xdim*log((double) N))/2,
+                                           _["AIC"] = -lv + xdim,
+                                        _["ICL"] = -lv + (xdim*log((double) N))/2 + entropy,
+                                           _["CteDim"] = -lv + Cte*xdim);
 	return criteria;
 }
 /**

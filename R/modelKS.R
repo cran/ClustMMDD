@@ -27,7 +27,7 @@
 # #' @examples
 # #'	data(par_ks)
 # #'	par_ks	
-#'	@exportClass	modelKKS
+#'	@exportClass	modelKS
 
 
 setClass(Class = "modelKS",
@@ -295,6 +295,23 @@ setMethod(f = "read.modelKS", signature("character"),
 	return(setModelKS(xmodelKS))
   }
 )
+
+#########################################
+##	Read modelKS from a file
+setGeneric( name = "model", package = "ClustMMDD", 
+  def = function(object)
+  {
+	standardGeneric("model")
+  }
+)
+
+setMethod(f = "model", signature("modelKS"),
+  definition = function(object)
+  {
+	return(list(K = object@K, S = object@S))
+  }
+)
+
 
 #########################################
 ##	Write in a file
