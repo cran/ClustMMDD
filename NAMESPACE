@@ -3,6 +3,9 @@
 useDynLib(ClustMMDD)
 importFrom(Rcpp, evalCpp, cpp_object_initializer, sourceCpp)
 import(methods)
+importFrom("grDevices", "dev.new")
+importFrom("graphics", "abline", "legend", "par", "plot", "text", "title")
+importFrom("utils", "read.table")
 
 #exportPattern("^[[:alpha:]]+")
 

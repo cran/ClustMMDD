@@ -53,17 +53,24 @@ dataR2C <- function(x, ploidy = 1)
   if(!is.element(ploidy, 1:5)) stop("ploidy not in 1:5")
   if(ncol(x)%%ploidy != 0) stop("Number of columns in data not corresponding to ploidy !")
 
+  x = as.matrix(x)
   N = nrow(x)	
   P = ncol(x)/ploidy 
   
-  if(ploidy == 1) x1 = data.frame(x)
-	else x1 = sapply(1:P, function(j)
+  if(ploidy == 1) 
+  {
+	x1 = data.frame(x)
+  }
+  else
+  {
+	x1 = sapply(1:P, function(j)
 	{
 	  j0 = (j-1)*ploidy + 1
 	  return(x[, j0:(j0+ploidy-1)])
 	})
+  }
   
-  COUNT = lapply(1:P, function(j) return(table(x1[, j])))
+  COUNT = lapply(1:P, function(j) return(table(unlist(x1[, j]))))
   
   xC = matrix(match(x1[ ,1], names(COUNT[[1]])), ncol = ploidy)
   if(P>1)

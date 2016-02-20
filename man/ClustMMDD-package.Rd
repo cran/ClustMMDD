@@ -6,7 +6,7 @@
   \code{ClustMMDD} : Clustering by Mixture Models for Discrete Data.
 }
 \description{
-  \code{ClustMMDD} stands for "Clustering by Mixture Models for Discrete Data". This package deals with the two-fold problem of variable selection and unsupervised classification in discrete settings. Variable selection and classification are simultaneously solved via a model selection procedure using penalized criteria : Akaike Information Criterion (AIC), Bayesian Information Criterion (BIC), Integrated Completed Log-likelihood (ICL) and a general criterion with penalty function to be data-driven calibrated.
+  \code{ClustMMDD} stands for "Clustering by Mixture Models for Discrete Data". This package deals with the two-fold problem of variable selection and model-based unsupervised classification in discrete settings. Variable selection and classification are simultaneously solved via a model selection procedure using penalized criteria: Akaike Information Criterion (AIC), Bayesian Information Criterion (BIC), Integrated Completed Log-likelihood (ICL) or a general criterion with penalty function to be data-driven calibrated.
 }
 \details{
   \tabular{ll}{

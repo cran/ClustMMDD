@@ -28,6 +28,7 @@ using namespace Rcpp;
 /** ------------------ */
 /**
  * @brief	Global variables
+ * @note	For R package ClustMMDD
  */
 /**
   * @brief  EM parameters.
@@ -86,18 +87,27 @@ int getNberCriteria_Rcpp()
     return NBER_CRITERIA;
 }
 
+/**
+ * @brief	Get the implemented criteria names
+ */
 // [[Rcpp::export()]]
 Rcpp::CharacterVector getCriteriaNames_Rcpp()
 {
     return CRITERIA_NAMES;
 }
 
+/**
+ * @brief	NBER_OCCURRENCES_MAX = ploidy 
+ */
 //	[[Rcpp::export()]]
 int getNberOccurrencesMax()
 {
   return NBER_OCCURRENCES_MAX;
 }
 
+/**
+ * @brief	Choice of the penalized criteria
+ */
 int _CRITERION_CHOICE;
 bool _EXPLORE_WITH_MANY_CRITERIA;
 int _EXPLORATION_CRITERION;
@@ -1308,15 +1318,15 @@ public:
    * @brief	Get a product of Probabilities corresponding to a vector
    * @warning	FIXME in case of _PLOIDY > 2
    */
-  double getProdProb1(int *x, int n_occurrences, int k, int j)
+  double getProdProb1(int *x, int ploidy, int k, int j)
   {
     double p = 1.0;
     int a, a0 = std::accumulate(_N_LEVELS.begin(), _N_LEVELS.begin() + j, 0);
-    for(a = 0; a < n_occurrences; a++)
+    for(a = 0; a < ploidy; a++)
       p *= _PROB(a0 + x[a], k);
 
     double b;
-    if(n_occurrences == 2)
+    if(ploidy == 2)
       b = (x[0] == x[1])? 1.0 : 2.0;
     else b = 1;
 
@@ -1326,24 +1336,24 @@ public:
   /**
    * @brief getProdProb For all value of _PLOIDY
    * @param x
-   * @param n_occurrences
+   * @param ploidy
    * @param k
    * @param j
    * @return
    */
-  double getProdProb(int *x, int n_occurrences, int k, int j)
+  double getProdProb(int *x, int ploidy, int k, int j)
   {
     double p = 1.0;
     int i, a, a0 = std::accumulate(_N_LEVELS.begin(), _N_LEVELS.begin() + j, 0);
-    for(a = 0; a < n_occurrences; a++)
+    for(a = 0; a < ploidy; a++)
       p *= _PROB(a0 + x[a], k);
 
-    double num = myFactorial(n_occurrences), deno = 1;
+    double num = myFactorial(ploidy), deno = 1;
     int s;
     for(a = 0; a < _N_LEVELS[j]; a++)
     {
         s = 0;
-        for(i = 0; i < n_occurrences; i++)
+        for(i = 0; i < ploidy; i++)
             if(a == x[i]) s += 1;
         deno *= myFactorial(s);
     }
@@ -1689,16 +1699,16 @@ public:
   /**
    * @brief DATA
    * @param data
-   * @param n_occurrences
+   * @param ploidy
    */
   DATA(Rcpp::IntegerMatrix data,
-       int n_occurrences)
+       int ploidy)
   {
-      if(n_occurrences < 1 || n_occurrences > NBER_OCCURRENCES_MAX || data.nrow() % n_occurrences != 0)
+      if(ploidy < 1 || ploidy > NBER_OCCURRENCES_MAX || data.nrow() % ploidy != 0)
           throw Rcpp::exception("Incompatible dimension or number of occurrences incorrect");
       _DATA = data.begin();
       _N_OfDATA = data.ncol(); // Warning : data is transposed and stored by row
-      _P_OfDATA = data.nrow()/n_occurrences;
+      _P_OfDATA = data.nrow()/ploidy;
       _LEVELS = NULL;
       _N_LEVELS = NULL;
       _LEVELS_COUNT = NULL;
@@ -1707,17 +1717,17 @@ public:
   }
 
   DATA(Rcpp::IntegerMatrix data,
-       int n_occurrences,
+       int ploidy,
        Rcpp::CharacterVector levels,
        Rcpp::IntegerVector n_levels,
        Rcpp::IntegerVector levels_count,
        Rcpp::DoubleVector levels_freq)
   {
-      if(n_occurrences < 1 || n_occurrences > NBER_OCCURRENCES_MAX || data.nrow() % n_occurrences != 0)
+      if(ploidy < 1 || ploidy > NBER_OCCURRENCES_MAX || data.nrow() % ploidy != 0)
           throw Rcpp::exception("Incompatible dimension or number of occurrences incorrect");
       _DATA = data.begin();
       _N_OfDATA = data.ncol();
-      _PLOIDY = n_occurrences;
+      _PLOIDY = ploidy;
       _P_OfDATA = data.nrow()/_PLOIDY;
       //_LEVELS = levels.begin();
       _N_LEVELS = n_levels.begin();
@@ -1727,16 +1737,16 @@ public:
   }
 
   DATA(Rcpp::IntegerMatrix data,
-       int n_occurrences,
+       int ploidy,
        Rcpp::IntegerVector n_levels,
       Rcpp::DoubleVector levels_freq)
   {
-      if(n_occurrences < 1 || n_occurrences > NBER_OCCURRENCES_MAX || data.nrow() % n_occurrences != 0)
+      if(ploidy < 1 || ploidy > NBER_OCCURRENCES_MAX || data.nrow() % ploidy != 0)
           throw Rcpp::exception("Incompatible dimension or number of occurrences incorrect");
       _DATA = data.begin();
       _N_OfDATA = data.ncol();
-      _P_OfDATA = data.nrow()/n_occurrences;
-      _PLOIDY = n_occurrences;
+      _P_OfDATA = data.nrow()/ploidy;
+      _PLOIDY = ploidy;
       //_LEVELS = levels.begin();
       _N_LEVELS = n_levels.begin();
       //_LEVELS_COUNT = levels_count.begin();
@@ -1815,16 +1825,16 @@ public:
   }
 
   void set(Rcpp::IntegerMatrix data,
-         int n_occurrences,
+         int ploidy,
          Rcpp::IntegerVector n_levels,
          Rcpp::IntegerVector levels_count,
          Rcpp::DoubleVector levels_freq)
     {
-        if(n_occurrences < 1 || n_occurrences > NBER_OCCURRENCES_MAX || data.nrow() % n_occurrences != 0)
+        if(ploidy < 1 || ploidy > NBER_OCCURRENCES_MAX || data.nrow() % ploidy != 0)
             throw Rcpp::exception("Incompatible dimension or number of occurrences incorrect");
         _DATA = data.begin();
         _N_OfDATA = data.ncol();
-        _PLOIDY = n_occurrences;
+        _PLOIDY = ploidy;
         _P_OfDATA = data.nrow()/_PLOIDY;
         //_LEVELS = levels.begin();
         _N_LEVELS = n_levels.begin();
@@ -1952,7 +1962,7 @@ void setParObs(DATA &data, int *prior_classif, PAR_KS &parObs)
 /**
  * @brief obsFreq
  * @param data
- * @param n_occurrences
+ * @param ploidy
  * @param levels
  * @param n_levels
  * @param levels_freq
@@ -1963,14 +1973,14 @@ void setParObs(DATA &data, int *prior_classif, PAR_KS &parObs)
  */
 // [[Rcpp::export]]
 Rcpp::List obsFreq(Rcpp::IntegerMatrix data,
-                   int n_occurrences,
+                   int ploidy,
                    Rcpp::CharacterVector levels,
                    Rcpp::IntegerVector n_levels,
                    Rcpp::DoubleVector levels_freq,
                    Rcpp::IntegerVector classif,
                    Rcpp::LogicalVector S)
 {
-    DATA xdata(data, n_occurrences, n_levels, levels_freq);
+    DATA xdata(data, ploidy, n_levels, levels_freq);
 
     int K = max(classif) + 1, N = xdata.getN();
     PAR_KS parObs(N, K, S);
@@ -1989,7 +1999,7 @@ Rcpp::List obsFreq(Rcpp::IntegerMatrix data,
  */
 double logLik(DATA &data, PAR_KS &par)
 {
-    int i, j, k, n_occurrences = data.getN_OCCURRENCES();
+    int i, j, k, ploidy = data.getN_OCCURRENCES();
     int N = data.getN();
     double prob, p, lv = 0.0;
 
@@ -2000,7 +2010,7 @@ double logLik(DATA &data, PAR_KS &par)
       {
         p = 1;
         for(j = 0; j < data.getP(); j++)
-          p *= par.getProdProb(data(i, j), n_occurrences, k, j);
+          p *= par.getProdProb(data(i, j), ploidy, k, j);
 
         prob += par.getPI_k(k)*p;
       }
@@ -2078,13 +2088,13 @@ bool EM1_Cpp(DATA &data, PAR_KS &par, double Cte)
  */
 // [[Rcpp::export]]
 Rcpp::List EM1_Rcpp(Rcpp::IntegerMatrix tab,
-               int n_occurrences,
+               int ploidy,
                Rcpp::CharacterVector levels,
                Rcpp::IntegerVector n_levels,
                Rcpp::IntegerVector levels_count,
                Rcpp::DoubleVector levels_freq, double Cte)
 {
-  DATA data(tab, n_occurrences, levels, n_levels, levels_count, levels_freq);
+  DATA data(tab, ploidy, levels, n_levels, levels_count, levels_freq);
   PAR_KS par;
   EM1_Cpp(data, par, Cte);
   return par.getList();
@@ -2140,7 +2150,7 @@ bool Expectation_Cpp (DATA & data,
 /**
  * @brief Expectation
  * @param tab
- * @param n_occurrences
+ * @param ploidy
  * @param levels
  * @param n_levels
  * @param levels_count
@@ -2149,14 +2159,14 @@ bool Expectation_Cpp (DATA & data,
  * @return
  */
 Rcpp::NumericMatrix Expectation(Rcpp::IntegerMatrix tab,
-                                int n_occurrences,
+                                int ploidy,
                                 Rcpp::CharacterVector levels,
                                 Rcpp::IntegerVector n_levels,
                                 Rcpp::IntegerVector levels_count,
                                 Rcpp::DoubleVector levels_freq,
                                 Rcpp::List listParKS)
 {
-  DATA data(tab, n_occurrences, levels, n_levels, levels_count, levels_freq);
+  DATA data(tab, ploidy, levels, n_levels, levels_count, levels_freq);
 
   PAR_KS par_ks(listParKS);
 
@@ -2194,7 +2204,7 @@ bool Maximisation_Cpp(DATA &data, PAR_KS &par, double * Tik)
       return false;
   }
 
-  int i, k, j, a, n_occurrences = data.getN_OCCURRENCES();
+  int i, k, j, a, ploidy = data.getN_OCCURRENCES();
   double s;
   std::vector<double> s1(K) ;
 
@@ -2230,7 +2240,7 @@ bool Maximisation_Cpp(DATA &data, PAR_KS &par, double * Tik)
           for(i = 0; i < N; i++)
             s += Tik[i*K + k] * data.howMany(a, i, j);
           s += ((double) xThreshold)/N_LEVELS[j] ; // _THRESHOLD for alleleic frequencies
-          par.setPROBkja(((double) s)/(n_occurrences*s1[k] + xThreshold), k, j, a);
+          par.setPROBkja(((double) s)/(ploidy*s1[k] + xThreshold), k, j, a);
         }
         //  Assure que _PROB_ALL soit constitue de simplexes
         s = 1.0;
@@ -2435,7 +2445,7 @@ bool smallEM_Cpp(DATA &data,
 /**
  * @brief smallEM_Rcpp
  * @param tab
- * @param n_occurrences
+ * @param ploidy
  * @param levels
  * @param n_levels
  * @param levels_count
@@ -2444,7 +2454,7 @@ bool smallEM_Cpp(DATA &data,
  */
 // [[Rcpp::export]]
 Rcpp::List smallEM_Rcpp(Rcpp::IntegerMatrix tab,
-                    int n_occurrences,
+                    int ploidy,
                     Rcpp::CharacterVector levels,
                     Rcpp::IntegerVector n_levels,
                     Rcpp::IntegerVector levels_count,
@@ -2452,7 +2462,7 @@ Rcpp::List smallEM_Rcpp(Rcpp::IntegerMatrix tab,
                    int K,
                    Rcpp::LogicalVector S)
 {
-    DATA data(tab, n_occurrences, levels, n_levels, levels_count, levels_freq);
+    DATA data(tab, ploidy, levels, n_levels, levels_count, levels_freq);
     PAR_KS par(data.getN(), K, S, n_levels, levels_freq);
 
     if(!smallEM_Cpp(data, par))
@@ -2625,7 +2635,7 @@ bool EM_Cpp(DATA &data,
 /**
  * @brief EM_Rcpp
  * @param tab
- * @param n_occurrences
+ * @param ploidy
  * @param levels
  * @param n_levels
  * @param levels_count
@@ -2638,7 +2648,7 @@ bool EM_Cpp(DATA &data,
  */
 // [[Rcpp::export]]
 Rcpp::List EM_Rcpp(Rcpp::IntegerMatrix tab,
-                    int n_occurrences,
+                    int ploidy,
                     Rcpp::CharacterVector levels,
                     Rcpp::IntegerVector n_levels,
                     Rcpp::IntegerVector levels_count,
@@ -2647,7 +2657,7 @@ Rcpp::List EM_Rcpp(Rcpp::IntegerMatrix tab,
                    Rcpp::LogicalVector S,
 				   double Cte = 1.0)
 {
-    DATA data(tab, n_occurrences, levels, n_levels, levels_count, levels_freq);
+    DATA data(tab, ploidy, levels, n_levels, levels_count, levels_freq);
     PAR_KS par(data.getN(), K, S, n_levels, levels_freq);
     if(K == 1)
     {
