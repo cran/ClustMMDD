@@ -582,6 +582,8 @@ bool lastLineComment(std::string fichier)
     // empty line or commented line
     return true;
   }
+  
+  fp.close();
   return false;
 }
 
@@ -681,7 +683,7 @@ int nberOfColumns (std::string fichier)
     }
     if(n != howmanyWords(ligne_lue))
     {
-      MyError("incomplete line");
+      MyError("Incomplete line");
       fp.close();
       return 0 ;
     }
@@ -743,11 +745,23 @@ bool readLineN(std::string fichier, int n, std::string & ligne)
   }
 
   std::ifstream fp(fichier.c_str(), std::ios::in);
-  if(fp == NULL)
+  
+//   if(fp == NULL)
+//   {
+//       ErrorOpeningFile();
+//       return false;
+//   }
+  
+  try 
   {
-      ErrorOpeningFile();
-      return false;
+	fp.exceptions(fp.failbit);
+  } catch (const std::ios_base::failure& e)
+  {
+	Rcpp::Rcout << "Caught an ios_base::failure.\n"
+                  << "Explanatory string: " << e.what() << '\n';
+	return false;
   }
+  
   std::string ligne_lue;
   for(int i=0; i<=n; i++)
       if(!nextLine(fp, ligne_lue))
@@ -756,6 +770,7 @@ bool readLineN(std::string fichier, int n, std::string & ligne)
           return false;
       }
   ligne=ligne_lue;
+  fp.close();
   return true;
 }
 
@@ -1898,7 +1913,10 @@ void setParObs(DATA &data, int *prior_classif, PAR_KS &parObs)
   int K = parObs.getK();
   Rcpp::LogicalVector S = parObs.getS();
   if(K < 2)
-    stop("The number of populations is < 2");
+  {
+    MyError("The number of populations is < 2");
+	return;
+  }
 
   int i, j, s, a, k, a0, N = data.getN(), P = data.getP();
   int *N_LEVELS = data.getN_LEVELS(), N_OCCURRENCES = data.getN_OCCURRENCES();
@@ -2197,7 +2215,7 @@ bool Maximisation_Cpp(DATA &data, PAR_KS &par, double * Tik)
   int N=data.getN(), L=data.getP(), K=par.getK();
   int *N_LEVELS = data.getN_LEVELS();
 
-  if(K==1) // FIXME : utiliser/calculer les probas empiriques !
+  if(K==1) 
   {
       MyError("The number of population is not > 1");
       throw Rcpp::exception("The number of population is not > 1");
@@ -2781,9 +2799,21 @@ Rcpp::List isInFile_Rcpp(int K, Rcpp::LogicalVector S, std::string fichier, bool
   Rcpp::List outList;
 
   std::ifstream fp_in(fichier.c_str(), std::ios_base::in);
-  if(fp_in == NULL)
+  
+//   if(fp_in == NULL)
+//   {
+// 	MyError("opening file");
+// 	outList["TrueFalse"] = false;
+// 	return outList;
+//   }
+  
+  try 
   {
-	MyError("opening file");
+	fp_in.exceptions(fp_in.failbit);
+  } catch (const std::ios_base::failure& e)
+  {
+	Rcpp::Rcout << "Caught an ios_base::failure.\n"
+                  << "Explanatory string: " << e.what() << '\n';
 	outList["TrueFalse"] = false;
 	return outList;
   }
@@ -2892,7 +2922,17 @@ Rcpp::List computeCriteriaFromFile_Rcpp(std::string xfile,
   Rcpp::NumericMatrix criteria(nLines, NBER_CRITERIA);
   Rcpp::List outPutList;
   
-  if((fIn == NULL) | (nLines <= 0))
+  try 
+  {
+	fIn.exceptions(fIn.failbit);
+  } catch (const std::ios_base::failure& e)
+  {
+	Rcpp::Rcout << "Caught an ios_base::failure.\n"
+                  << "Explanatory string: " << e.what() << '\n';
+	return outPutList;
+  }
+  
+  if(nLines <= 0)
   {
 	MyError("opening xfile");
 	return outPutList;
@@ -3027,10 +3067,20 @@ Rcpp::List readModelAt_Rcpp(std::string xfile, int n, bool header)
   
   std::ifstream fIn(xfile.c_str(), std::ios_base::in);
   
-  if(fIn == NULL)
+//   if(fIn == NULL)
+//   {
+//         ErrorOpeningFile();
+// 	return outPutList;
+//   }
+  
+  try 
   {
-        ErrorOpeningFile();
-	return outPutList;
+	fIn.exceptions(fIn.failbit);
+  } catch (const std::ios_base::failure& e)
+  {
+	Rcpp::Rcout << "Caught an ios_base::failure.\n"
+                  << "Explanatory string: " << e.what() << '\n';
+    return outPutList;
   }
   
   std::string modelString;
@@ -3064,11 +3114,22 @@ bool selectDimFromFile_Rcpp(std::string xfileExploredModels,
                                            bool header)
 {
   std::ifstream fIn(xfileExploredModels.c_str(), std::ios_base::in);
-  if(fIn == NULL)
-    {
-      ErrorOpeningFile();
-      return false;
-    }
+  
+//   if(fIn == NULL)
+//     {
+//       ErrorOpeningFile();
+//       return false;
+//     }
+  
+  try 
+  {
+	fIn.exceptions(fIn.failbit);
+  } catch (const std::ios_base::failure& e)
+  {
+	Rcpp::Rcout << "Caught an ios_base::failure.\n"
+                  << "Explanatory string: " << e.what() << '\n';
+    return false;
+  }
 
   std::string modelString;
   double logLik;
@@ -3408,10 +3469,21 @@ void selectModelFromFile_Rcpp(std::string xfileExploredModels,
     }
 
   std::ifstream fIn(xfileExploredModels.c_str(), std::ios_base::in);
-  if(fIn == NULL)
-    {
-      throw Rcpp::exception("Can not open file");
-    }
+  
+//   if(fIn == NULL)
+//     {
+//       throw Rcpp::exception("Can not open file");
+//     }
+    
+  try 
+  {
+	fIn.exceptions(fIn.failbit);
+  } catch (const std::ios_base::failure& e)
+  {
+	Rcpp::Rcout << "Caught an ios_base::failure.\n"
+                  << "Explanatory string: " << e.what() << '\n';
+	return;
+  }
 
   std::string modelString;
   double logLik, entropy;
@@ -3589,12 +3661,24 @@ Rcpp::List readParKS_Rcpp(std::string xfile)
   std::ifstream fp(xfile.c_str(), std::ios::in);
   Rcpp::List outList;
   
-  if(fp==NULL)
+//   if(fp==NULL)
+//   {
+//     MyError("Unable to open parameter file " );
+// 	fp.close();
+//     return outList;
+//   }
+  
+  try 
   {
-    MyError("Unable to open parameter file " );
-	fp.close();
-    return outList;
+	fp.exceptions(fp.failbit);
+  } catch (const std::ios_base::failure& e)
+  {
+	MyError("Opening a file");
+	Rcpp::Rcout << "Caught an ios_base::failure.\n"
+                  << "Explanatory string: " << e.what() << '\n';
+	return outList;
   }
+  
   //
   if(nextLine(fp, lu)) // L
   {

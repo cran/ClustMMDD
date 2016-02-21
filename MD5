@@ -1,9 +1,9 @@
-1765daf8591611d7a0e9d898971080ea *DESCRIPTION
+9b6ef2786362fa6a0db350ede3e0f1c5 *DESCRIPTION
 c9b5af9c32834842b337e75fc9094de1 *NAMESPACE
 6e32c989d272545eab0b36033eb94cdc *R/ClustMMDD.R
 5b7282cc6051aff2f0bfba1bb98197d9 *R/RcppExports.R
 1cb17a4fb51f5f531582384d282c28e0 *R/modelKS.R
-16512d6792b9ca64914afa687bca2ed9 *R/zzz.R
+e0cbae24d23aa3ae0c5cdb935e63d92f *R/zzz.R
 d173ee734061446a17e6788856a1eec9 *data/exModelKS.rda
 368bc112dc3d7164ecb9bcaa600e6d54 *data/genotype1.rda
 012aba6e7a3931f72dfb313e04e9e10a *data/genotype2.rda
@@ -49,7 +49,7 @@ d66146b10dee1a1ba7bbc7322eb409b3 *man/simulData-methods.Rd
 330db108fe1629b4587b795655efbb57 *man/z==-methods.Rd
 17c4adc4dfd290f5f8295fbf754607dd *man/z[-methods.Rd
 b23d1a5d1b3519b1da0a50ad6c82c07b *man/z[_--methods.Rd
-c4df6507c1cbcba7c15ef6c20390b035 *src/ClustMMDD.cpp
+1d96e1ea7bc176eba9b1946265b3a726 *src/ClustMMDD.cpp
 9a06ae9a6eb61992f2cb1994988b84b6 *src/ClustMMDD.h
 1385b4ccc140d335a0ec868992f69f0e *src/RcppExports.cpp
 3b73a24810947a5f9d9dcec82746c971 *src/macros.h
