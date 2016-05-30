@@ -16,8 +16,8 @@ Rcpp::loadModule("MODULE_PAR_KS", TRUE)
 
 .onAttach <- function(libname, pkgname)
 {
-  packageStartupMessage("\n ClustMMDD = Clustering by Mixture models for Discrete Data.
-  \n Version 1.0.3
+  packageStartupMessage("\n ClustMMDD = Clustering by Mixture Models for Discrete Data.
+  \n Version 1.0.4
   \n ClustMMDD is the R version of the stand alone c++ package named 'MixMoGenD'
   \n   that is available on www.u-psud.fr/math/~toussile.")
   
